@@ -1,0 +1,1 @@
+export const LOCAL_STORAGE_PROJECTS_KEY = 'tinkerhub_project_idea_generator_projects';
