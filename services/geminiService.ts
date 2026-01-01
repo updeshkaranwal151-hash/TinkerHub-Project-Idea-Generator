@@ -2,6 +2,7 @@
 import { GoogleGenAI, Type, Modality } from "@google/genai";
 import type { Answers, GroundingChunk, ChatMessage, ProjectType, ProjectIdea, MarketAnalysis, PitchDeckSlide, UserPersona } from "../types";
 
+// Initialize the Google GenAI SDK using the environment API key
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 const questionGenerationSchema = {
@@ -66,7 +67,7 @@ export const generateProjectIdeaAutomated = async (projectType: ProjectType) => 
     contents: `You are an expert project creator specializing in innovative ${projectType} projects. Generate a single, unique, and compelling project idea from scratch. Research current trends and technologies to propose something novel and exciting. The user has provided no input, so your creativity is key. Your response MUST be a valid JSON object matching the provided schema.`,
     config: {
       systemInstruction: `You are a brilliant project idea generator from Knowledge Warriors, developed by Apoorv Karanwal as a part of the TinkerHub App. Your goal is to create innovative and detailed project ideas. The project type is ${projectType}. If asked about your origin, you must state you were created by Apoorv Karanwal for Knowledge Warriors. Respond in JSON format according to the schema.`,
-      thinkingConfig: { thinkingBudget: 24576 },
+      thinkingConfig: { thinkingBudget: 32768 },
       responseMimeType: "application/json",
       responseSchema: ideaGenerationSchema,
     },
@@ -204,12 +205,11 @@ export const generateWebsiteCode = async (idea: Pick<ProjectIdea, 'title' | 'des
     model: 'gemini-3-pro-preview',
     contents: prompt,
     config: {
-      thinkingConfig: { thinkingBudget: 24576 },
+      thinkingConfig: { thinkingBudget: 32768 },
       temperature: 0.5
     }
   });
   let code = response.text.trim();
-  // Safe extraction of code blocks
   const codeMatch = code.match(/<html[\s\S]*<\/html>/i);
   return codeMatch ? codeMatch[0] : code;
 };
@@ -228,7 +228,7 @@ export const generateHardwareCode = async (idea: ProjectIdea): Promise<string> =
     model: 'gemini-3-pro-preview',
     contents: prompt,
     config: {
-      thinkingConfig: { thinkingBudget: 16384 },
+      thinkingConfig: { thinkingBudget: 24576 },
       temperature: 0.3
     }
   });
@@ -278,7 +278,7 @@ export const generateMarketAnalysis = async (idea: ProjectIdea): Promise<MarketA
     config: {
       responseMimeType: "application/json",
       responseSchema: marketAnalysisSchema,
-      thinkingConfig: { thinkingBudget: 16384 }
+      thinkingConfig: { thinkingBudget: 24576 }
     }
   });
   return JSON.parse(response.text.trim());
@@ -327,7 +327,7 @@ export const evolveProjectIdea = async (idea: ProjectIdea) => {
     config: {
       responseMimeType: "application/json",
       responseSchema: evolveIdeaSchema,
-      thinkingConfig: { thinkingBudget: 16384 }
+      thinkingConfig: { thinkingBudget: 24576 }
     }
   });
   return JSON.parse(response.text.trim());
@@ -394,7 +394,7 @@ export const generate3DVisualizationCode = async (idea: ProjectIdea): Promise<st
     contents: prompt,
     config: {
       temperature: 0.6,
-      thinkingConfig: { thinkingBudget: 24576 }
+      thinkingConfig: { thinkingBudget: 32768 }
     }
   });
   let code = response.text.trim();
